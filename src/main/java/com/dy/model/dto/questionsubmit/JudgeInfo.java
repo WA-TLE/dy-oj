@@ -19,11 +19,11 @@ public class JudgeInfo {
     /**
      * 程序执行用时(ms)
      */
-    private String time;
+    private long time;
 
     /**
      * 程序执行消耗内存(kb)
      */
-    private String memory;
+    private long memory;
 
 }

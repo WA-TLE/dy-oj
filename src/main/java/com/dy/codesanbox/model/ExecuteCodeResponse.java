@@ -1,6 +1,7 @@
 package com.dy.codesanbox.model;
 
 import com.dy.model.dto.questionsubmit.JudgeInfo;
+import com.dy.model.enums.QuestionSubmitStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,6 +34,11 @@ public class ExecuteCodeResponse {
      * 判题信息
      */
     private JudgeInfo judgeInfo;
+
+    /**
+     * 程序执行状态
+     */
+    private String  status;
 
     
 }
