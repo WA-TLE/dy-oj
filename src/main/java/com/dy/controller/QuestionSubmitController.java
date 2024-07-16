@@ -1,11 +1,15 @@
 package com.dy.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dy.common.BaseResponse;
 import com.dy.common.ErrorCode;
 import com.dy.common.ResultUtils;
 import com.dy.exception.BusinessException;
+import com.dy.model.dto.questionsubmit.QuestionSubmitQueryRequest;
 import com.dy.model.dto.questionsubmit.QuestionSubmitAddRequest;
+import com.dy.model.entity.QuestionSubmit;
 import com.dy.model.entity.User;
+import com.dy.model.vo.QuestionSubmitVO;
 import com.dy.service.QuestionSubmitService;
 import com.dy.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -52,4 +56,20 @@ public class QuestionSubmitController {
         long result = questionSubmitService.doQuestionSubmit(questionSubmitAddRequest, loginUser);
         return ResultUtils.success(result);
     }
+
+    @PostMapping("/list/page")
+    public BaseResponse<Page<QuestionSubmitVO>> listQuestionSubmitVOByPage(@RequestBody QuestionSubmitQueryRequest questionSubmitQueryRequest,
+                                                                           HttpServletRequest request) {
+        long current = questionSubmitQueryRequest.getCurrent();
+        long size = questionSubmitQueryRequest.getPageSize();
+        Page<QuestionSubmit> questionSubmitPage = questionSubmitService.page(new Page<>(current, size),
+                questionSubmitService.getQueryWrapper(questionSubmitQueryRequest));
+
+        //  获取当前登录用户
+        User loginUser = userService.getLoginUser(request);
+
+        return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionSubmitPage, loginUser));
+    }
+
+
 }
