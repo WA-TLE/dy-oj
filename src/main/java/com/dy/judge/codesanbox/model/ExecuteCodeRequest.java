@@ -1,4 +1,4 @@
-package com.dy.codesanbox.model;
+package com.dy.judge.codesanbox.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

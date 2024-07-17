@@ -1,10 +1,10 @@
-package com.dy.codesanbox.proxy;
+package com.dy.judge.codesanbox.proxy;
 import com.dy.model.dto.questionsubmit.JudgeInfo;
 import java.util.List;
 
-import com.dy.codesanbox.CodeSanBox;
-import com.dy.codesanbox.model.ExecuteCodeRequest;
-import com.dy.codesanbox.model.ExecuteCodeResponse;
+import com.dy.judge.codesanbox.CodeSanBox;
+import com.dy.judge.codesanbox.model.ExecuteCodeRequest;
+import com.dy.judge.codesanbox.model.ExecuteCodeResponse;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CodeSanBoxProxy implements CodeSanBox {
 
-    private CodeSanBox codeSanBox;
+    private final CodeSanBox codeSanBox;
 
     public CodeSanBoxProxy(CodeSanBox codeSanBox) {
         this.codeSanBox = codeSanBox;

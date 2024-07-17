@@ -1,8 +1,9 @@
-package com.dy.codesanbox;
+package com.dy.judge.codesanbox;
 
-import com.dy.codesanbox.impl.ExampleCodeSanBox;
-import com.dy.codesanbox.impl.RemoteCodeSanBox;
-import com.dy.codesanbox.impl.ThirdPartyCodeSanBox;
+import com.dy.judge.codesanbox.impl.ExampleCodeSanBox;
+import com.dy.judge.codesanbox.impl.RemoteCodeSanBox;
+import com.dy.judge.codesanbox.impl.ThirdPartyCodeSanBox;
+import org.springframework.stereotype.Component;
 
 
 /**
@@ -10,8 +11,9 @@ import com.dy.codesanbox.impl.ThirdPartyCodeSanBox;
  * @Date: 2024/7/16 17:33
  * @Description: 代码沙箱生产工厂
  */
+@Component
 public class CodeSanBoxFactory {
-    CodeSanBox createCodeSanBox(String type) {
+   public CodeSanBox createCodeSanBox(String type) {
         switch (type) {
             case "example":
                 return new ExampleCodeSanBox();

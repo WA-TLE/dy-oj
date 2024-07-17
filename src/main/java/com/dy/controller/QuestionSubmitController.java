@@ -54,6 +54,11 @@ public class QuestionSubmitController {
         final User loginUser = userService.getLoginUser(request);
         long questionId = questionSubmitAddRequest.getQuestionId();
         long result = questionSubmitService.doQuestionSubmit(questionSubmitAddRequest, loginUser);
+
+
+        // TODO: 2024/7/17 调用判题模块
+
+
         return ResultUtils.success(result);
     }
 

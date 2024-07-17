@@ -1,4 +1,4 @@
-package com.dy.codesanbox.model;
+package com.dy.judge.codesanbox.model;
 
 import com.dy.model.dto.questionsubmit.JudgeInfo;
 import com.dy.model.enums.QuestionSubmitStatusEnum;

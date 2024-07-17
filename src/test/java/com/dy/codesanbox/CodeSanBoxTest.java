@@ -1,9 +1,10 @@
 package com.dy.codesanbox;
 
-import com.dy.codesanbox.impl.ExampleCodeSanBox;
-import com.dy.codesanbox.model.ExecuteCodeRequest;
-import com.dy.codesanbox.model.ExecuteCodeResponse;
-import com.dy.codesanbox.proxy.CodeSanBoxProxy;
+import com.dy.judge.codesanbox.CodeSanBox;
+import com.dy.judge.codesanbox.CodeSanBoxFactory;
+import com.dy.judge.codesanbox.model.ExecuteCodeRequest;
+import com.dy.judge.codesanbox.model.ExecuteCodeResponse;
+import com.dy.judge.codesanbox.proxy.CodeSanBoxProxy;
 import com.dy.model.enums.QuestionSubmitLanguageEnum;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,20 +13,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 /**
  * @Author: dy
  * @Date: 2024/7/16 17:22
  * @Description:
  */
 @SpringBootTest
-class CodeSanBoxTest {
+public class CodeSanBoxTest {
 
     @Value("${codeSanBox.type}")
     private String type;
     @Test
-    void textCodeSanBox() {
+    public void textCodeSanBox() {
 //        ExampleCodeSanBox exampleCodeSanBox = new ExampleCodeSanBox();
 
         CodeSanBoxFactory codeSanBoxFactory = new CodeSanBoxFactory();

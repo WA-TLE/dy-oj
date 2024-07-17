@@ -14,13 +14,13 @@ public class JudgeConfig {
     /**
      * 时间限制
      */
-    String timeLimit;
+    Long timeLimit;
     /**
      * 内存限制
      */
-    String memoryLimit;
+    Long memoryLimit;
     /**
      * 堆栈限制
      */
-    String stackLimit;
+    Long stackLimit;
 }

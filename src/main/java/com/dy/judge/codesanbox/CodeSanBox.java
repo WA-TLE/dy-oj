@@ -1,7 +1,7 @@
-package com.dy.codesanbox;
+package com.dy.judge.codesanbox;
 
-import com.dy.codesanbox.model.ExecuteCodeRequest;
-import com.dy.codesanbox.model.ExecuteCodeResponse;
+import com.dy.judge.codesanbox.model.ExecuteCodeRequest;
+import com.dy.judge.codesanbox.model.ExecuteCodeResponse;
 
 /**
  * @Author: dy
