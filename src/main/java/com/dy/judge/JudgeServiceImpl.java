@@ -49,6 +49,9 @@ public class JudgeServiceImpl implements JudgeService {
     @Value("${codeSanBox.type}")
     private String type;
 
+    @Resource
+    private JudgeManager judgeManager;
+
     @Override
     public Question doJudge(Long questionSubmitId) {
         if (questionSubmitId == null || questionSubmitId < 0) {
@@ -81,9 +84,9 @@ public class JudgeServiceImpl implements JudgeService {
         Question question = questionService.getById(questionId);
 
         String judgeCase = question.getJudgeCase();
-        List<JudgeCase> judgeCases = JSONUtil.toList(judgeCase, JudgeCase.class);
-        List<String> standardInputList = judgeCases.stream().map(JudgeCase::getInput).collect(Collectors.toList());
-        List<String> standardOutputList = judgeCases.stream().map(JudgeCase::getOutput).collect(Collectors.toList());
+        List<JudgeCase> judgeCaseList = JSONUtil.toList(judgeCase, JudgeCase.class);
+        List<String> standardInputList = judgeCaseList.stream().map(JudgeCase::getInput).collect(Collectors.toList());
+        List<String> standardOutputList = judgeCaseList.stream().map(JudgeCase::getOutput).collect(Collectors.toList());
 
         String judgeConfigStr = question.getJudgeConfig();
         JudgeConfig judgeConfig = JSONUtil.toBean(judgeConfigStr, JudgeConfig.class);
@@ -91,43 +94,22 @@ public class JudgeServiceImpl implements JudgeService {
         //  调用沙箱, 获取代码执行信息
         CodeSanBox codeSanBox = codeSanBoxFactory.createCodeSanBox(type);
         CodeSanBoxProxy codeSanBoxProxy = new CodeSanBoxProxy(codeSanBox);
-
         ExecuteCodeRequest executeCodeRequest = new ExecuteCodeRequest();
         executeCodeRequest.setLanguage(language);
         executeCodeRequest.setCode(code);
         executeCodeRequest.setInputList(standardInputList);
         ExecuteCodeResponse executeCodeResponse = codeSanBoxProxy.executeCode(executeCodeRequest);
 
-        String message = executeCodeResponse.getMessage();
-        List<String> outputList = executeCodeResponse.getOutputList();
-        JudgeInfo judgeInfo = executeCodeResponse.getJudgeInfo();
-        long time = judgeInfo.getTime();
-        long memory = judgeInfo.getMemory();
-        String status = executeCodeResponse.getStatus();
+        JudgeContext judgeContext = new JudgeContext();
+        judgeContext.setJudgeInfo(executeCodeResponse.getJudgeInfo());
+        judgeContext.setOutputList(executeCodeResponse.getOutputList());
+        judgeContext.setJudgeCaseList(judgeCaseList);
+        judgeContext.setQuestion(question);
 
-        //  跟新沙箱的执行结果, 判断用户的提交状态
-        //  输出大小是否一样
-        if (outputList.size() != standardOutputList.size()) {
-            judgeInfo.setMessage(JudgeInfoMessageEnum.WRONG_ANSWER.getValue());
-        }
+        JudgeInfo judgeInfo = judgeManager.doJudge(judgeContext);
 
-        for (int i = 0; i < standardOutputList.size(); i++) {
-            if (!standardOutputList.get(i).equals(outputList.get(i))) {
-                judgeInfo.setMessage(JudgeInfoMessageEnum.WRONG_ANSWER.getValue());
-                break;
-            }
-        }
-        // TODO: 2024/7/17 提交题目时 judgeConfig 没有一块提交
-        if (time > judgeConfig.getTimeLimit()) {
-            judgeInfo.setMessage(JudgeInfoMessageEnum.TIME_LIMIT_EXCEEDED.getValue());
-        }
-        if (memory > judgeConfig.getMemoryLimit()) {
-            judgeInfo.setMessage(JudgeInfoMessageEnum.MEMORY_LIMIT_EXCEEDED.getValue());
-        }
-
-        judgeInfo.setMessage(JudgeInfoMessageEnum.ACCEPTED.getValue());
-
-
+        questionSubmitUpdate = new QuestionSubmit();
+        questionSubmitUpdate.setId(questionSubmitId);
         questionSubmitUpdate.setJudgeInfo(JSONUtil.toJsonStr(judgeInfo));
         questionSubmitUpdate.setStatus(QuestionSubmitStatusEnum.SUCCEED.getValue());
 
