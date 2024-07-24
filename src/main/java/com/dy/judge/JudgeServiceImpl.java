@@ -20,7 +20,6 @@ import com.dy.judge.codesanbox.proxy.CodeSanBoxProxy;
 import com.dy.model.dto.question.JudgeCase;
 import com.dy.model.entity.Question;
 import com.dy.model.entity.QuestionSubmit;
-import com.dy.model.enums.JudgeInfoMessageEnum;
 import com.dy.model.enums.QuestionSubmitStatusEnum;
 import com.dy.service.QuestionService;
 import com.dy.service.QuestionSubmitService;
@@ -53,7 +52,7 @@ public class JudgeServiceImpl implements JudgeService {
     private JudgeManager judgeManager;
 
     @Override
-    public Question doJudge(Long questionSubmitId) {
+    public QuestionSubmit doJudge(Long questionSubmitId) {
         if (questionSubmitId == null || questionSubmitId < 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -68,7 +67,7 @@ public class JudgeServiceImpl implements JudgeService {
             throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "程序已经执行判题");
         }
 
-        // TODO: 2024/7/17 限制用户重复判题
+        // TODO: 2024/7/17 并发情况下限制用户重复判题
 
         //  更新题目信息
         QuestionSubmit questionSubmitUpdate = new QuestionSubmit();
@@ -118,9 +117,6 @@ public class JudgeServiceImpl implements JudgeService {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "题目状态更新错误");
         }
 
-
-
-
-        return questionService.getById(questionId);
+        return questionSubmitService.getById(questionId);
     }
 }

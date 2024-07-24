@@ -1,6 +1,7 @@
 package com.dy.judge;
 
 import com.dy.model.entity.Question;
+import com.dy.model.entity.QuestionSubmit;
 
 /**
  * @Author: dy
@@ -8,5 +9,5 @@ import com.dy.model.entity.Question;
  * @Description:
  */
 public interface JudgeService {
-    Question doJudge(Long questionSubmitId);
+    QuestionSubmit doJudge(Long questionSubmitId);
 }

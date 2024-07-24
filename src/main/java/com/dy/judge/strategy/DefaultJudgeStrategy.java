@@ -27,9 +27,9 @@ public class DefaultJudgeStrategy implements JudgeStrategy {
 
         List<String> outputList = judgeContext.getOutputList();
         List<JudgeCase> judgeCaseList = judgeContext.getJudgeCaseList();
+        List<String> standardOutputList = judgeCaseList.stream().map(JudgeCase::getOutput).collect(Collectors.toList());
         Question question = judgeContext.getQuestion();
         QuestionSubmit questionSubmit = judgeContext.getQuestionSubmit();
-        List<String> standardOutputList = judgeCaseList.stream().map(JudgeCase::getOutput).collect(Collectors.toList());
         JudgeInfo judgeInfoResponse = new JudgeInfo();
         judgeInfoResponse.setTime(time);
         judgeInfoResponse.setMemory(memory);
@@ -50,7 +50,7 @@ public class DefaultJudgeStrategy implements JudgeStrategy {
 
         String judgeConfigStr = question.getJudgeConfig();
         JudgeConfig judgeConfig = JSONUtil.toBean(judgeConfigStr, JudgeConfig.class);
-        // TODO: 2024/7/17 提交题目时 judgeConfig 没有一块提交
+        // TODO: 2024/7/17 新增题目时 judgeConfig 没有一块提交
         if (time > judgeConfig.getTimeLimit()) {
             judgeInfoResponse.setMessage(JudgeInfoMessageEnum.MEMORY_LIMIT_EXCEEDED.getValue());
             return judgeInfoResponse;

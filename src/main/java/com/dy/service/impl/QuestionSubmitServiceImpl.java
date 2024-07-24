@@ -7,6 +7,7 @@ import com.dy.common.ErrorCode;
 import com.dy.constant.CommonConstant;
 import com.dy.exception.BusinessException;
 import com.dy.exception.ThrowUtils;
+import com.dy.judge.JudgeService;
 import com.dy.model.dto.questionsubmit.QuestionSubmitAddRequest;
 import com.dy.model.dto.questionsubmit.QuestionSubmitQueryRequest;
 import com.dy.model.entity.Question;
@@ -31,23 +32,27 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 
 /**
-* @author 微光
-* @description 针对表【question_submit(题目提交)】的数据库操作Service实现
-* @createDate 2024-07-14 14:18:23
-*/
+ * @author 微光
+ * @description 针对表【question_submit(题目提交)】的数据库操作Service实现
+ * @createDate 2024-07-14 14:18:23
+ */
 @Service
 public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper, QuestionSubmit>
-    implements QuestionSubmitService{
+        implements QuestionSubmitService {
     @Resource
     private QuestionService questionService;
 
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private JudgeService judgeService;
 
     /**
      * 提交题目
@@ -92,6 +97,12 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         }
 
         // TODO: 2024/7/17 调用判题模块
+        Long questionSubmitId = questionSubmit.getId();
+
+        //  异步执行判题服务
+        CompletableFuture.runAsync(() -> {
+            judgeService.doJudge(questionSubmitId);
+        });
 
 
         return questionSubmit.getId();
@@ -152,7 +163,6 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         questionSubmitVOPage.setRecords(questionSubmitVOList);
         return questionSubmitVOPage;
     }
-
 
 
 }
