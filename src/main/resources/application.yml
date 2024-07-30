@@ -102,4 +102,4 @@ knife4j:
           - com.dy.controller
 
 codeSanBox:
-  type: example
+  type: remote
