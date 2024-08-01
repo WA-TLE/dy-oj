@@ -23,7 +23,7 @@ public class RemoteCodeSanBox implements CodeSanBox {
     @Override
     public ExecuteCodeResponse executeCode(ExecuteCodeRequest executeCodeRequest) {
         log.info("调用远程代码沙箱");
-        String url = "http://8.130.9.216:8081/executeCode";
+        String url = "http://localhost:8081/executeCode";
         String jsonStr = JSONUtil.toJsonStr(executeCodeRequest);
 
         //  利用 hutool 工具类调用

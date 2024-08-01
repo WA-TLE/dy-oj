@@ -25,14 +25,30 @@ public class DefaultJudgeStrategy implements JudgeStrategy {
         long time = judgeInfo.getTime();
         long memory = judgeInfo.getMemory();
 
-        List<String> outputList = judgeContext.getOutputList();
-        List<JudgeCase> judgeCaseList = judgeContext.getJudgeCaseList();
-        List<String> standardOutputList = judgeCaseList.stream().map(JudgeCase::getOutput).collect(Collectors.toList());
         Question question = judgeContext.getQuestion();
-        QuestionSubmit questionSubmit = judgeContext.getQuestionSubmit();
         JudgeInfo judgeInfoResponse = new JudgeInfo();
         judgeInfoResponse.setTime(time);
         judgeInfoResponse.setMemory(memory);
+
+        //  判断时间内存是否超出限制
+        String judgeConfigStr = question.getJudgeConfig();
+        JudgeConfig judgeConfig = JSONUtil.toBean(judgeConfigStr, JudgeConfig.class);
+        // TODO: 2024/7/17 新增题目时 judgeConfig 没有一块提交
+        if (time > judgeConfig.getTimeLimit()) {
+            judgeInfoResponse.setMessage(JudgeInfoMessageEnum.MEMORY_LIMIT_EXCEEDED.getValue());
+            return judgeInfoResponse;
+        }
+        if (memory > judgeConfig.getMemoryLimit()) {
+            judgeInfoResponse.setMessage(JudgeInfoMessageEnum.TIME_LIMIT_EXCEEDED.getValue());
+            return judgeInfoResponse;
+        }
+
+
+        //  判断测试用例
+        List<String> outputList = judgeContext.getOutputList();
+        List<JudgeCase> judgeCaseList = judgeContext.getJudgeCaseList();
+        List<String> standardOutputList = judgeCaseList.stream().map(JudgeCase::getOutput).collect(Collectors.toList());
+        QuestionSubmit questionSubmit = judgeContext.getQuestionSubmit();
 
         //  跟新沙箱的执行结果, 判断用户的提交状态
         //  输出大小是否一样
@@ -48,17 +64,6 @@ public class DefaultJudgeStrategy implements JudgeStrategy {
             }
         }
 
-        String judgeConfigStr = question.getJudgeConfig();
-        JudgeConfig judgeConfig = JSONUtil.toBean(judgeConfigStr, JudgeConfig.class);
-        // TODO: 2024/7/17 新增题目时 judgeConfig 没有一块提交
-        if (time > judgeConfig.getTimeLimit()) {
-            judgeInfoResponse.setMessage(JudgeInfoMessageEnum.MEMORY_LIMIT_EXCEEDED.getValue());
-            return judgeInfoResponse;
-        }
-        if (memory > judgeConfig.getMemoryLimit()) {
-            judgeInfoResponse.setMessage(JudgeInfoMessageEnum.TIME_LIMIT_EXCEEDED.getValue());
-            return judgeInfoResponse;
-        }
 
         judgeInfoResponse.setMessage(JudgeInfoMessageEnum.ACCEPTED.getValue());
 

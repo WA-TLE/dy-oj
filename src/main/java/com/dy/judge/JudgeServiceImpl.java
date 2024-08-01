@@ -72,7 +72,6 @@ public class JudgeServiceImpl implements JudgeService {
         //  更新题目信息
         QuestionSubmit questionSubmitUpdate = new QuestionSubmit();
         questionSubmitUpdate.setStatus(QuestionSubmitStatusEnum.RUNNING.getValue());
-        questionSubmitUpdate.setQuestionId(questionId);
         questionSubmitUpdate.setId(questionSubmitId);
         boolean update = questionSubmitService.updateById(questionSubmitUpdate);
         if (!update) {
@@ -82,11 +81,13 @@ public class JudgeServiceImpl implements JudgeService {
         //  获取题目信息
         Question question = questionService.getById(questionId);
 
+        //  获取题目测试用例
         String judgeCase = question.getJudgeCase();
         List<JudgeCase> judgeCaseList = JSONUtil.toList(judgeCase, JudgeCase.class);
         List<String> standardInputList = judgeCaseList.stream().map(JudgeCase::getInput).collect(Collectors.toList());
         List<String> standardOutputList = judgeCaseList.stream().map(JudgeCase::getOutput).collect(Collectors.toList());
 
+        //  获取题目限制信息(超时限制, 内存限制)
         String judgeConfigStr = question.getJudgeConfig();
         JudgeConfig judgeConfig = JSONUtil.toBean(judgeConfigStr, JudgeConfig.class);
 
@@ -99,11 +100,13 @@ public class JudgeServiceImpl implements JudgeService {
         executeCodeRequest.setInputList(standardInputList);
         ExecuteCodeResponse executeCodeResponse = codeSanBoxProxy.executeCode(executeCodeRequest);
 
+        //  执行判题策略
         JudgeContext judgeContext = new JudgeContext();
         judgeContext.setJudgeInfo(executeCodeResponse.getJudgeInfo());
         judgeContext.setOutputList(executeCodeResponse.getOutputList());
         judgeContext.setJudgeCaseList(judgeCaseList);
         judgeContext.setQuestion(question);
+        judgeContext.setQuestionSubmit(questionSubmit);
 
         JudgeInfo judgeInfo = judgeManager.doJudge(judgeContext);
 

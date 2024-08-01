@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -36,10 +37,10 @@ public class CodeSanBoxTest {
                 "    public static void main(String[] args) {\n" +
                 "        Integer a = Integer.parseInt(args[0]);\n" +
                 "        Integer b = Integer.parseInt(args[1]);\n" +
-                "        System.out.println(\"结果: \" + (a + b));\n" +
+                "        System.out.println((a + b));\n" +
                 "    }\n" +
-                "}\n";
-        List<String> inputList = Arrays.asList("1 2", "3 4");
+                "}";
+        List<String> inputList = Collections.singletonList("1 2");
         String value = QuestionSubmitLanguageEnum.JAVA.getValue();
         ExecuteCodeRequest executeCodeRequest = ExecuteCodeRequest.builder()
                 .inputList(inputList)

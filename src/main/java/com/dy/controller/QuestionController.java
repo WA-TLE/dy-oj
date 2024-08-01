@@ -246,6 +246,14 @@ public class QuestionController {
         return ResultUtils.success(result);
     }
 
+    /**
+     * 查询题目提交列表
+     *
+     * @param questionSubmitQueryRequest
+     * @param request
+     * @return
+     */
+
     @PostMapping("questionsubmit/list/page")
     public BaseResponse<Page<QuestionSubmitVO>> listQuestionSubmitVOByPage(@RequestBody QuestionSubmitQueryRequest questionSubmitQueryRequest,
                                                                            HttpServletRequest request) {

@@ -70,7 +70,7 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         //  判断语言我们是否支持
         String language = questionSubmitAddRequest.getLanguage();
         QuestionSubmitLanguageEnum enumByValue = QuestionSubmitLanguageEnum.getEnumByValue(language);
-        if (language == null) {
+        if (enumByValue == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "编程语言错误");
         }
 
