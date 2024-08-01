@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServletRequest;
  * @Date: 2024/7/14 14:19
  * @Description:
  */
-@RestController
-@RequestMapping("/questionSubmit")
+//@RestController
+//@RequestMapping("/questionSubmit")
 @Slf4j
 public class QuestionSubmitController {
 
@@ -44,7 +44,7 @@ public class QuestionSubmitController {
      * @param request
      * @return resultNum 本次提交题目变化数
      */
-    @PostMapping("/")
+//    @PostMapping("/")
     public BaseResponse<Long> doQuestionSubmit(@RequestBody QuestionSubmitAddRequest questionSubmitAddRequest,
                                          HttpServletRequest request) {
         if (questionSubmitAddRequest == null || questionSubmitAddRequest.getQuestionId() <= 0) {
@@ -58,7 +58,7 @@ public class QuestionSubmitController {
         return ResultUtils.success(result);
     }
 
-    @PostMapping("/list/page")
+//    @PostMapping("/list/page")
     public BaseResponse<Page<QuestionSubmitVO>> listQuestionSubmitVOByPage(@RequestBody QuestionSubmitQueryRequest questionSubmitQueryRequest,
                                                                            HttpServletRequest request) {
         long current = questionSubmitQueryRequest.getCurrent();

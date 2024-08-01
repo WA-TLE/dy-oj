@@ -12,11 +12,15 @@ import com.dy.constant.UserConstant;
 import com.dy.exception.BusinessException;
 import com.dy.exception.ThrowUtils;
 import com.dy.model.dto.question.*;
-import com.dy.model.dto.user.UserQueryRequest;
+import com.dy.model.dto.questionsubmit.QuestionSubmitAddRequest;
+import com.dy.model.dto.questionsubmit.QuestionSubmitQueryRequest;
 import com.dy.model.entity.Question;
+import com.dy.model.entity.QuestionSubmit;
 import com.dy.model.entity.User;
+import com.dy.model.vo.QuestionSubmitVO;
 import com.dy.model.vo.QuestionVO;
 import com.dy.service.QuestionService;
+import com.dy.service.QuestionSubmitService;
 import com.dy.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -36,6 +40,10 @@ public class QuestionController {
 
     @Resource
     private QuestionService questionService;
+
+    @Resource
+    private QuestionSubmitService questionSubmitService;
+
 
     @Resource
     private UserService userService;
@@ -212,6 +220,48 @@ public class QuestionController {
         return ResultUtils.success(questionService.getQuestionVOPage(questionPage, request));
     }
 
+
+
+
+
+
+    /**
+     * 提交题目
+     *
+     * @param questionSubmitAddRequest
+     * @param request
+     * @return resultNum 本次提交题目变化数
+     */
+    @PostMapping("/questionsubmit/do")
+    public BaseResponse<Long> doQuestionSubmit(@RequestBody QuestionSubmitAddRequest questionSubmitAddRequest,
+                                               HttpServletRequest request) {
+        if (questionSubmitAddRequest == null || questionSubmitAddRequest.getQuestionId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 登录才能提交题目
+        final User loginUser = userService.getLoginUser(request);
+        long questionId = questionSubmitAddRequest.getQuestionId();
+        long result = questionSubmitService.doQuestionSubmit(questionSubmitAddRequest, loginUser);
+
+        return ResultUtils.success(result);
+    }
+
+    @PostMapping("questionsubmit/list/page")
+    public BaseResponse<Page<QuestionSubmitVO>> listQuestionSubmitVOByPage(@RequestBody QuestionSubmitQueryRequest questionSubmitQueryRequest,
+                                                                           HttpServletRequest request) {
+        long current = questionSubmitQueryRequest.getCurrent();
+        long size = questionSubmitQueryRequest.getPageSize();
+        Page<QuestionSubmit> questionSubmitPage = questionSubmitService.page(new Page<>(current, size),
+                questionSubmitService.getQueryWrapper(questionSubmitQueryRequest));
+
+        //  获取当前登录用户
+        User loginUser = userService.getLoginUser(request);
+
+        return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionSubmitPage, loginUser));
+    }
+
+
+
     // endregion
 
 
@@ -221,7 +271,9 @@ public class QuestionController {
      * @param questionEditRequest
      * @param request
      * @return
-     *//*
+     */
+
+    /*
     @PostMapping("/edit")
     public BaseResponse<Boolean> editQuestion(@RequestBody QuestionEditRequest questionEditRequest, HttpServletRequest request) {
         if (questionEditRequest == null || questionEditRequest.getId() <= 0) {

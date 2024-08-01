@@ -17,15 +17,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class RemoteCodeSanBox implements CodeSanBox {
 
-
+    //  定义鉴权请求头
+    public static final String AUTH_REQUEST_HEADER = "auth";
+    public static final String AUTH_REQUEST_SECRET = "dingyu";
     @Override
     public ExecuteCodeResponse executeCode(ExecuteCodeRequest executeCodeRequest) {
         log.info("调用远程代码沙箱");
-        String url = "http://localhost:8081/executeCode";
+        String url = "http://8.130.9.216:8081/executeCode";
         String jsonStr = JSONUtil.toJsonStr(executeCodeRequest);
 
         //  利用 hutool 工具类调用
         String responseStr = HttpUtil.createPost(url)
+                .header(AUTH_REQUEST_HEADER, AUTH_REQUEST_SECRET)
                 .body(jsonStr)
                 .execute()
                 .body();
